@@ -46,9 +46,9 @@ const ChartView = ({ data, message }: ChartViewProps) => {
               }}
             />
             <Bar
-              dataKey="avgMarks"
+              dataKey="avgCgpa"
               fill="hsl(245 100% 70%)"
-              name="Average Marks"
+              name="Average CGPA"
               radius={[8, 8, 0, 0]}
             />
             <Bar

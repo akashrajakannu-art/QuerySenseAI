@@ -31,8 +31,10 @@ const AddStudentDialog = ({ onAddStudent }: AddStudentDialogProps) => {
   const [formData, setFormData] = useState({
     name: "",
     department: "",
+    cgpa: "",
     attendance: "",
-    marks: "",
+    dateOfBirth: "",
+    email: "",
   });
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -57,9 +59,17 @@ const AddStudentDialog = ({ onAddStudent }: AddStudentDialogProps) => {
       return;
     }
 
-    const attendance = parseInt(formData.attendance);
-    const marks = parseInt(formData.marks);
+    const cgpa = parseFloat(formData.cgpa);
+    if (isNaN(cgpa) || cgpa < 0 || cgpa > 10) {
+      toast({
+        title: "Error",
+        description: "CGPA must be between 0 and 10",
+        variant: "destructive",
+      });
+      return;
+    }
 
+    const attendance = parseInt(formData.attendance);
     if (isNaN(attendance) || attendance < 0 || attendance > 100) {
       toast({
         title: "Error",
@@ -69,10 +79,20 @@ const AddStudentDialog = ({ onAddStudent }: AddStudentDialogProps) => {
       return;
     }
 
-    if (isNaN(marks) || marks < 0 || marks > 100) {
+    if (!formData.dateOfBirth) {
       toast({
         title: "Error",
-        description: "Marks must be between 0 and 100",
+        description: "Please select date of birth",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      toast({
+        title: "Error",
+        description: "Please enter a valid email",
         variant: "destructive",
       });
       return;
@@ -83,8 +103,10 @@ const AddStudentDialog = ({ onAddStudent }: AddStudentDialogProps) => {
       id: Date.now(),
       name: formData.name.trim(),
       department: formData.department,
+      cgpa,
       attendance,
-      marks,
+      dateOfBirth: formData.dateOfBirth,
+      email: formData.email.trim(),
     };
 
     onAddStudent(newStudent);
@@ -98,8 +120,10 @@ const AddStudentDialog = ({ onAddStudent }: AddStudentDialogProps) => {
     setFormData({
       name: "",
       department: "",
+      cgpa: "",
       attendance: "",
-      marks: "",
+      dateOfBirth: "",
+      email: "",
     });
     setOpen(false);
   };
@@ -160,16 +184,17 @@ const AddStudentDialog = ({ onAddStudent }: AddStudentDialogProps) => {
               </Select>
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="marks">Marks (0-100)</Label>
+              <Label htmlFor="cgpa">CGPA (0-10)</Label>
               <Input
-                id="marks"
+                id="cgpa"
                 type="number"
-                placeholder="Enter marks"
+                step="0.01"
+                placeholder="Enter CGPA"
                 min="0"
-                max="100"
-                value={formData.marks}
+                max="10"
+                value={formData.cgpa}
                 onChange={(e) =>
-                  setFormData({ ...formData, marks: e.target.value })
+                  setFormData({ ...formData, cgpa: e.target.value })
                 }
                 className="glass-card border-primary/30"
               />
@@ -185,6 +210,31 @@ const AddStudentDialog = ({ onAddStudent }: AddStudentDialogProps) => {
                 value={formData.attendance}
                 onChange={(e) =>
                   setFormData({ ...formData, attendance: e.target.value })
+                }
+                className="glass-card border-primary/30"
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="dateOfBirth">Date of Birth</Label>
+              <Input
+                id="dateOfBirth"
+                type="date"
+                value={formData.dateOfBirth}
+                onChange={(e) =>
+                  setFormData({ ...formData, dateOfBirth: e.target.value })
+                }
+                className="glass-card border-primary/30"
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="Enter email address"
+                value={formData.email}
+                onChange={(e) =>
+                  setFormData({ ...formData, email: e.target.value })
                 }
                 className="glass-card border-primary/30"
               />

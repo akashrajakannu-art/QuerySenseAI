@@ -3,70 +3,90 @@
     "id": 1,
     "name": "Alice Johnson",
     "department": "CSE",
+    "cgpa": 8.8,
     "attendance": 92,
-    "marks": 88
+    "dateOfBirth": "2002-05-15",
+    "email": "alice.johnson@university.edu"
   },
   {
     "id": 2,
     "name": "Bob Martinez",
     "department": "ECE",
+    "cgpa": 9.1,
     "attendance": 74,
-    "marks": 91
+    "dateOfBirth": "2001-08-22",
+    "email": "bob.martinez@university.edu"
   },
   {
     "id": 3,
     "name": "Clara Williams",
     "department": "MECH",
+    "cgpa": 7.7,
     "attendance": 85,
-    "marks": 77
+    "dateOfBirth": "2002-11-30",
+    "email": "clara.williams@university.edu"
   },
   {
     "id": 4,
     "name": "David Chen",
     "department": "CSE",
+    "cgpa": 9.5,
     "attendance": 96,
-    "marks": 95
+    "dateOfBirth": "2001-03-10",
+    "email": "david.chen@university.edu"
   },
   {
     "id": 5,
     "name": "Emma Davis",
     "department": "IT",
+    "cgpa": 8.9,
     "attendance": 81,
-    "marks": 89
+    "dateOfBirth": "2002-07-18",
+    "email": "emma.davis@university.edu"
   },
   {
     "id": 6,
     "name": "Frank Wilson",
     "department": "CSE",
+    "cgpa": 8.2,
     "attendance": 88,
-    "marks": 82
+    "dateOfBirth": "2001-12-05",
+    "email": "frank.wilson@university.edu"
   },
   {
     "id": 7,
     "name": "Grace Lee",
     "department": "ECE",
+    "cgpa": 9.4,
     "attendance": 95,
-    "marks": 94
+    "dateOfBirth": "2002-02-28",
+    "email": "grace.lee@university.edu"
   },
   {
     "id": 8,
     "name": "Henry Brown",
     "department": "IT",
+    "cgpa": 8.5,
     "attendance": 79,
-    "marks": 85
+    "dateOfBirth": "2001-09-14",
+    "email": "henry.brown@university.edu"
   },
   {
     "id": 9,
     "name": "Ivy Thompson",
     "department": "MECH",
+    "cgpa": 7.9,
     "attendance": 91,
-    "marks": 79
+    "dateOfBirth": "2002-04-20",
+    "email": "ivy.thompson@university.edu"
   },
   {
     "id": 10,
     "name": "Jack Anderson",
     "department": "CSE",
+    "cgpa": 9.0,
     "attendance": 83,
-    "marks": 90
+    "dateOfBirth": "2001-06-08",
+    "email": "jack.anderson@university.edu"
   }
 ]

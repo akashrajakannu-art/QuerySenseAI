@@ -4,8 +4,10 @@ export interface Student {
   id: number;
   name: string;
   department: string;
+  cgpa: number;
   attendance: number;
-  marks: number;
+  dateOfBirth: string;
+  email: string;
 }
 
 export interface QueryResult {
@@ -45,39 +47,39 @@ export const processQuery = (query: string): QueryResult => {
       };
     }
 
-    // HIGHEST MARKS
-    if (lowerQuery.includes("highest") && lowerQuery.includes("mark")) {
+    // HIGHEST CGPA
+    if (lowerQuery.includes("highest") && (lowerQuery.includes("cgpa") || lowerQuery.includes("mark"))) {
       const topStudent = filteredStudents.reduce((a, b) =>
-        a.marks > b.marks ? a : b
+        a.cgpa > b.cgpa ? a : b
       );
       return {
         type: "single",
-        message: `🏆 Top student${department ? ` in ${department}` : ""}: ${topStudent.name} with ${topStudent.marks} marks`,
+        message: `🏆 Top student${department ? ` in ${department}` : ""}: ${topStudent.name} with ${topStudent.cgpa} CGPA`,
         data: topStudent,
       };
     }
 
-    // LOWEST MARKS
-    if (lowerQuery.includes("lowest") && lowerQuery.includes("mark")) {
+    // LOWEST CGPA
+    if (lowerQuery.includes("lowest") && (lowerQuery.includes("cgpa") || lowerQuery.includes("mark"))) {
       const bottomStudent = filteredStudents.reduce((a, b) =>
-        a.marks < b.marks ? a : b
+        a.cgpa < b.cgpa ? a : b
       );
       return {
         type: "single",
-        message: `📉 Lowest scoring student${department ? ` in ${department}` : ""}: ${bottomStudent.name} with ${bottomStudent.marks} marks`,
+        message: `📉 Lowest scoring student${department ? ` in ${department}` : ""}: ${bottomStudent.name} with ${bottomStudent.cgpa} CGPA`,
         data: bottomStudent,
       };
     }
 
-    // AVERAGE MARKS
-    if (lowerQuery.includes("average") && lowerQuery.includes("mark")) {
-      const avgMarks = (
-        filteredStudents.reduce((sum, s) => sum + s.marks, 0) /
+    // AVERAGE CGPA
+    if (lowerQuery.includes("average") && (lowerQuery.includes("cgpa") || lowerQuery.includes("mark"))) {
+      const avgCgpa = (
+        filteredStudents.reduce((sum, s) => sum + s.cgpa, 0) /
         filteredStudents.length
       ).toFixed(2);
       return {
         type: "single",
-        message: `📊 Average marks${department ? ` in ${department}` : ""}: ${avgMarks}`,
+        message: `📊 Average CGPA${department ? ` in ${department}` : ""}: ${avgCgpa}`,
       };
     }
 
@@ -120,11 +122,11 @@ export const processQuery = (query: string): QueryResult => {
       };
     }
 
-    // BELOW threshold (marks or attendance)
-    const belowMatch = lowerQuery.match(/below\s+(\d+)/);
+    // BELOW threshold (cgpa or attendance)
+    const belowMatch = lowerQuery.match(/below\s+(\d+\.?\d*)/);
     if (belowMatch) {
-      const threshold = parseInt(belowMatch[1]);
-      const field = lowerQuery.includes("attendance") ? "attendance" : "marks";
+      const threshold = parseFloat(belowMatch[1]);
+      const field = lowerQuery.includes("attendance") ? "attendance" : "cgpa";
       const belowStudents = filteredStudents.filter(
         (s) => s[field] < threshold
       );
@@ -144,10 +146,10 @@ export const processQuery = (query: string): QueryResult => {
     }
 
     // ABOVE threshold
-    const aboveMatch = lowerQuery.match(/above\s+(\d+)/);
+    const aboveMatch = lowerQuery.match(/above\s+(\d+\.?\d*)/);
     if (aboveMatch) {
-      const threshold = parseInt(aboveMatch[1]);
-      const field = lowerQuery.includes("attendance") ? "attendance" : "marks";
+      const threshold = parseFloat(aboveMatch[1]);
+      const field = lowerQuery.includes("attendance") ? "attendance" : "cgpa";
       const aboveStudents = filteredStudents.filter(
         (s) => s[field] > threshold
       );
@@ -185,12 +187,12 @@ export const processQuery = (query: string): QueryResult => {
         if (!acc[student.department]) {
           acc[student.department] = {
             department: student.department,
-            totalMarks: 0,
+            totalCgpa: 0,
             totalAttendance: 0,
             count: 0,
           };
         }
-        acc[student.department].totalMarks += student.marks;
+        acc[student.department].totalCgpa += student.cgpa;
         acc[student.department].totalAttendance += student.attendance;
         acc[student.department].count += 1;
         return acc;
@@ -198,7 +200,7 @@ export const processQuery = (query: string): QueryResult => {
 
       const chartData = Object.values(deptStats).map((dept: any) => ({
         department: dept.department,
-        avgMarks: Math.round(dept.totalMarks / dept.count),
+        avgCgpa: (dept.totalCgpa / dept.count).toFixed(2),
         avgAttendance: Math.round(dept.totalAttendance / dept.count),
       }));
 

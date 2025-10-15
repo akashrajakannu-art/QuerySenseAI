@@ -39,10 +39,16 @@ const DataTable = ({ students, message }: DataTableProps) => {
                 Department
               </TableHead>
               <TableHead className="text-primary font-semibold">
-                Marks
+                CGPA
               </TableHead>
               <TableHead className="text-primary font-semibold">
                 Attendance
+              </TableHead>
+              <TableHead className="text-primary font-semibold">
+                Email
+              </TableHead>
+              <TableHead className="text-primary font-semibold">
+                Date of Birth
               </TableHead>
             </TableRow>
           </TableHeader>
@@ -66,7 +72,7 @@ const DataTable = ({ students, message }: DataTableProps) => {
                 </TableCell>
                 <TableCell>
                   <span className="font-semibold text-accent">
-                    {student.marks}
+                    {student.cgpa}
                   </span>
                 </TableCell>
                 <TableCell>
@@ -80,6 +86,16 @@ const DataTable = ({ students, message }: DataTableProps) => {
                     }`}
                   >
                     {student.attendance}%
+                  </span>
+                </TableCell>
+                <TableCell>
+                  <span className="text-sm text-muted-foreground">
+                    {student.email}
+                  </span>
+                </TableCell>
+                <TableCell>
+                  <span className="text-sm">
+                    {new Date(student.dateOfBirth).toLocaleDateString()}
                   </span>
                 </TableCell>
               </TableRow>

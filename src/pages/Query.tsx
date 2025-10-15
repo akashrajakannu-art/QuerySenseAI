@@ -10,6 +10,8 @@ import ChartView from "@/components/ChartView";
 import ErrorBox from "@/components/ErrorBox";
 import QueryHistory from "@/components/QueryHistory";
 import AddStudentDialog from "@/components/AddStudentDialog";
+import ImportDataDialog from "@/components/ImportDataDialog";
+import ViewDatasetDialog from "@/components/ViewDatasetDialog";
 import {
   processQuery,
   QueryResult,
@@ -21,6 +23,7 @@ import {
   getStoredStudents,
   addStudent as addStudentToStorage,
   resetStudents,
+  saveStudents,
 } from "@/utils/studentStorage";
 import { toast } from "@/hooks/use-toast";
 
@@ -53,6 +56,16 @@ const Query = () => {
     toast({
       title: "Data Reset",
       description: "Student data has been reset to default",
+    });
+  };
+
+  const handleImportData = (students: Student[]) => {
+    saveStudents(students);
+    setStudentCount(students.length);
+    setResult(null);
+    toast({
+      title: "Import Complete",
+      description: `Successfully imported ${students.length} student records`,
     });
   };
 
@@ -102,6 +115,8 @@ const Query = () => {
                 <Database className="w-4 h-4 text-secondary" />
                 <span className="text-muted-foreground">{studentCount} students</span>
               </div>
+              <ViewDatasetDialog students={getStoredStudents()} />
+              <ImportDataDialog onImportData={handleImportData} />
               <Button
                 variant="ghost"
                 size="sm"

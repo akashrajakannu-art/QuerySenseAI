@@ -32,16 +32,28 @@ const AnswerCard = ({ message, student }: AnswerCardProps) => {
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-muted-foreground">Marks:</span>
+                  <span className="text-muted-foreground">CGPA:</span>
                   <span className="font-semibold text-accent flex items-center gap-1">
                     <TrendingUp className="w-4 h-4" />
-                    {student.marks}
+                    {student.cgpa}
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-muted-foreground">Attendance:</span>
                   <span className="font-semibold text-foreground">
                     {student.attendance}%
+                  </span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-muted-foreground">Email:</span>
+                  <span className="font-semibold text-foreground text-sm">
+                    {student.email}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-muted-foreground">DOB:</span>
+                  <span className="font-semibold text-foreground">
+                    {new Date(student.dateOfBirth).toLocaleDateString()}
                   </span>
                 </div>
               </div>
