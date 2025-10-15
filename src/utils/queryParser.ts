@@ -1,4 +1,4 @@
-import studentsData from "@/data/students.json";
+import { getStoredStudents } from "./studentStorage";
 
 export interface Student {
   id: number;
@@ -16,9 +16,8 @@ export interface QueryResult {
   error?: string;
 }
 
-const students: Student[] = studentsData;
-
 export const processQuery = (query: string): QueryResult => {
+  const students = getStoredStudents();
   const lowerQuery = query.toLowerCase().trim();
 
   // Error handling for empty queries
@@ -181,7 +180,8 @@ export const processQuery = (query: string): QueryResult => {
       lowerQuery.includes("compare") ||
       lowerQuery.includes("department")
     ) {
-      const deptStats = students.reduce((acc: any, student) => {
+      const allStudents = getStoredStudents();
+      const deptStats = allStudents.reduce((acc: any, student) => {
         if (!acc[student.department]) {
           acc[student.department] = {
             department: student.department,
@@ -213,7 +213,7 @@ export const processQuery = (query: string): QueryResult => {
     return {
       type: "multiple",
       message: "Here are all the students in the database:",
-      data: students,
+      data: getStoredStudents(),
     };
   } catch (error) {
     return {

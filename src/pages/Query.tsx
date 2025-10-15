@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Sparkles, Send, Home } from "lucide-react";
+import { Sparkles, Send, Home, Database, RotateCcw } from "lucide-react";
 import { Link } from "react-router-dom";
 import AIAssistant from "@/components/AIAssistant";
 import AnswerCard from "@/components/AnswerCard";
@@ -9,6 +9,7 @@ import DataTable from "@/components/DataTable";
 import ChartView from "@/components/ChartView";
 import ErrorBox from "@/components/ErrorBox";
 import QueryHistory from "@/components/QueryHistory";
+import AddStudentDialog from "@/components/AddStudentDialog";
 import {
   processQuery,
   QueryResult,
@@ -16,6 +17,12 @@ import {
   saveQuery,
   Student,
 } from "@/utils/queryParser";
+import {
+  getStoredStudents,
+  addStudent as addStudentToStorage,
+  resetStudents,
+} from "@/utils/studentStorage";
+import { toast } from "@/hooks/use-toast";
 
 const Query = () => {
   const [query, setQuery] = useState("");
@@ -24,6 +31,30 @@ const Query = () => {
   const [recentQueries, setRecentQueries] = useState<string[]>(
     getRecentQueries()
   );
+  const [studentCount, setStudentCount] = useState(0);
+
+  useEffect(() => {
+    setStudentCount(getStoredStudents().length);
+  }, []);
+
+  const handleAddStudent = (student: Student) => {
+    addStudentToStorage(student);
+    setStudentCount(getStoredStudents().length);
+    // Clear current result to show updated data
+    if (result) {
+      setResult(null);
+    }
+  };
+
+  const handleResetData = () => {
+    resetStudents();
+    setStudentCount(getStoredStudents().length);
+    setResult(null);
+    toast({
+      title: "Data Reset",
+      description: "Student data has been reset to default",
+    });
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -66,6 +97,22 @@ const Query = () => {
                 Home
               </Button>
             </Link>
+            <div className="flex items-center gap-2">
+              <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full glass-card border-primary/30 text-sm">
+                <Database className="w-4 h-4 text-secondary" />
+                <span className="text-muted-foreground">{studentCount} students</span>
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleResetData}
+                className="gap-2"
+                title="Reset to default data"
+              >
+                <RotateCcw className="w-4 h-4" />
+              </Button>
+              <AddStudentDialog onAddStudent={handleAddStudent} />
+            </div>
           </div>
         </div>
       </nav>
