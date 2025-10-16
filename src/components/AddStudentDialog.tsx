@@ -23,7 +23,7 @@ import { Student } from "@/utils/queryParser";
 import { toast } from "@/hooks/use-toast";
 
 interface AddStudentDialogProps {
-  onAddStudent: (student: Student) => void;
+  onAddStudent: (student: Student) => Promise<void>;
 }
 
 const AddStudentDialog = ({ onAddStudent }: AddStudentDialogProps) => {
@@ -37,7 +37,7 @@ const AddStudentDialog = ({ onAddStudent }: AddStudentDialogProps) => {
     email: "",
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     // Validation
@@ -109,23 +109,27 @@ const AddStudentDialog = ({ onAddStudent }: AddStudentDialogProps) => {
       email: formData.email.trim(),
     };
 
-    onAddStudent(newStudent);
+    try {
+      await onAddStudent(newStudent);
 
-    toast({
-      title: "Success! 🎉",
-      description: `${newStudent.name} has been added successfully`,
-    });
+      toast({
+        title: "Success",
+        description: `${newStudent.name} has been added successfully`,
+      });
 
-    // Reset form
-    setFormData({
-      name: "",
-      department: "",
-      cgpa: "",
-      attendance: "",
-      dateOfBirth: "",
-      email: "",
-    });
-    setOpen(false);
+      // Reset form
+      setFormData({
+        name: "",
+        department: "",
+        cgpa: "",
+        attendance: "",
+        dateOfBirth: "",
+        email: "",
+      });
+      setOpen(false);
+    } catch (error) {
+      console.error("Error adding student:", error);
+    }
   };
 
   return (

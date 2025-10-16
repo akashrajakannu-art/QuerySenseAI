@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -20,19 +20,43 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Database, Edit, Save, X, Trash2, Plus } from "lucide-react";
 import { Student } from "@/utils/queryParser";
-import { saveStudents } from "@/utils/studentStorage";
+import { saveStudents, getStoredStudents } from "@/utils/studentStorage";
 import { toast } from "@/hooks/use-toast";
 
 interface ViewDatasetDialogProps {
-  students: Student[];
   onDataChange?: () => void;
 }
 
-const ViewDatasetDialog = ({ students, onDataChange }: ViewDatasetDialogProps) => {
+const ViewDatasetDialog = ({ onDataChange }: ViewDatasetDialogProps) => {
   const [open, setOpen] = useState(false);
   const [editMode, setEditMode] = useState(false);
+  const [students, setStudents] = useState<Student[]>([]);
   const [editedStudents, setEditedStudents] = useState<Student[]>([]);
   const [editingId, setEditingId] = useState<number | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (open) {
+      loadStudents();
+    }
+  }, [open]);
+
+  const loadStudents = async () => {
+    setIsLoading(true);
+    try {
+      const data = await getStoredStudents();
+      setStudents(data);
+    } catch (error) {
+      console.error("Error loading students:", error);
+      toast({
+        title: "Error",
+        description: "Failed to load student data",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleEdit = () => {
     setEditedStudents(JSON.parse(JSON.stringify(students)));
@@ -45,15 +69,25 @@ const ViewDatasetDialog = ({ students, onDataChange }: ViewDatasetDialogProps) =
     setEditedStudents([]);
   };
 
-  const handleSave = () => {
-    saveStudents(editedStudents);
-    setEditMode(false);
-    setEditingId(null);
-    onDataChange?.();
-    toast({
-      title: "Changes saved",
-      description: `Successfully updated ${editedStudents.length} student records.`,
-    });
+  const handleSave = async () => {
+    try {
+      await saveStudents(editedStudents);
+      setStudents(editedStudents);
+      setEditMode(false);
+      setEditingId(null);
+      onDataChange?.();
+      toast({
+        title: "Changes saved",
+        description: `Successfully updated ${editedStudents.length} student records.`,
+      });
+    } catch (error) {
+      console.error("Error saving students:", error);
+      toast({
+        title: "Error",
+        description: "Failed to save changes",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleFieldChange = (id: number, field: keyof Student, value: string | number) => {

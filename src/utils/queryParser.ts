@@ -18,8 +18,8 @@ export interface QueryResult {
   error?: string;
 }
 
-export const processQuery = (query: string): QueryResult => {
-  const students = getStoredStudents();
+export const processQuery = async (query: string): Promise<QueryResult> => {
+  const students = await getStoredStudents();
   const lowerQuery = query.toLowerCase().trim();
 
   // Error handling for empty queries
@@ -182,7 +182,7 @@ export const processQuery = (query: string): QueryResult => {
       lowerQuery.includes("compare") ||
       lowerQuery.includes("department")
     ) {
-      const allStudents = getStoredStudents();
+      const allStudents = await getStoredStudents();
       const deptStats = allStudents.reduce((acc: any, student) => {
         if (!acc[student.department]) {
           acc[student.department] = {
@@ -215,7 +215,7 @@ export const processQuery = (query: string): QueryResult => {
     return {
       type: "multiple",
       message: "Here are all the students in the database:",
-      data: getStoredStudents(),
+      data: await getStoredStudents(),
     };
   } catch (error) {
     return {

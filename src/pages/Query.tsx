@@ -37,6 +37,7 @@ const Query = () => {
     getRecentQueries()
   );
   const [studentCount, setStudentCount] = useState(0);
+  const [isLoadingStudents, setIsLoadingStudents] = useState(false);
   const [userEmail, setUserEmail] = useState<string | null>(null);
 
   useEffect(() => {
@@ -45,6 +46,7 @@ const Query = () => {
         navigate("/auth");
       } else {
         setUserEmail(session.user.email || null);
+        loadStudentCount();
       }
     });
 
@@ -53,41 +55,78 @@ const Query = () => {
         navigate("/auth");
       } else {
         setUserEmail(session.user.email || null);
+        loadStudentCount();
       }
     });
-
-    setStudentCount(getStoredStudents().length);
 
     return () => subscription.unsubscribe();
   }, [navigate]);
 
-  const handleAddStudent = (student: Student) => {
-    addStudentToStorage(student);
-    setStudentCount(getStoredStudents().length);
-    // Clear current result to show updated data
-    if (result) {
-      setResult(null);
+  const loadStudentCount = async () => {
+    setIsLoadingStudents(true);
+    try {
+      const students = await getStoredStudents();
+      setStudentCount(students.length);
+    } catch (error) {
+      console.error("Error loading students:", error);
+    } finally {
+      setIsLoadingStudents(false);
     }
   };
 
-  const handleResetData = () => {
-    resetStudents();
-    setStudentCount(getStoredStudents().length);
-    setResult(null);
-    toast({
-      title: "Data Reset",
-      description: "Student data has been reset to default",
-    });
+  const handleAddStudent = async (student: Student) => {
+    try {
+      await addStudentToStorage(student);
+      await loadStudentCount();
+      if (result) {
+        setResult(null);
+      }
+    } catch (error) {
+      console.error("Error adding student:", error);
+      toast({
+        title: "Error",
+        description: "Failed to add student",
+        variant: "destructive",
+      });
+    }
   };
 
-  const handleImportData = (students: Student[]) => {
-    saveStudents(students);
-    setStudentCount(students.length);
-    setResult(null);
-    toast({
-      title: "Import Complete",
-      description: `Successfully imported ${students.length} student records`,
-    });
+  const handleResetData = async () => {
+    try {
+      await resetStudents();
+      await loadStudentCount();
+      setResult(null);
+      toast({
+        title: "Data Reset",
+        description: "Student data has been reset to default",
+      });
+    } catch (error) {
+      console.error("Error resetting data:", error);
+      toast({
+        title: "Error",
+        description: "Failed to reset data",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleImportData = async (students: Student[]) => {
+    try {
+      await saveStudents(students);
+      await loadStudentCount();
+      setResult(null);
+      toast({
+        title: "Import Complete",
+        description: `Successfully imported ${students.length} student records`,
+      });
+    } catch (error) {
+      console.error("Error importing data:", error);
+      toast({
+        title: "Import Error",
+        description: "Failed to import student records",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -97,16 +136,23 @@ const Query = () => {
     setIsProcessing(true);
     setResult(null);
 
-    // Simulate AI processing delay for better UX
-    await new Promise((resolve) => setTimeout(resolve, 1200));
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 1200));
 
-    const queryResult = processQuery(query);
-    setResult(queryResult);
-    setIsProcessing(false);
+      const queryResult = await processQuery(query);
+      setResult(queryResult);
 
-    // Save to history
-    saveQuery(query);
-    setRecentQueries(getRecentQueries());
+      saveQuery(query);
+      setRecentQueries(getRecentQueries());
+    } catch (error) {
+      console.error("Error processing query:", error);
+      setResult({
+        type: "error",
+        error: "Failed to process query. Please try again.",
+      });
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   const handleSelectRecentQuery = (selectedQuery: string) => {
@@ -131,12 +177,11 @@ const Query = () => {
                 <span className="text-muted-foreground">{studentCount} students</span>
               </div>
               <div className="hidden sm:flex items-center gap-2">
-                <ViewDatasetDialog 
-                  students={getStoredStudents()} 
-                  onDataChange={() => {
-                    setStudentCount(getStoredStudents().length);
+                <ViewDatasetDialog
+                  onDataChange={async () => {
+                    await loadStudentCount();
                     if (result) setResult(null);
-                  }} 
+                  }}
                 />
                 <ImportDataDialog onImportData={handleImportData} />
               </div>
