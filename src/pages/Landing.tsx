@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Sparkles, ArrowRight, Database, Brain, BarChart3 } from "lucide-react";
+import { Sparkles, ArrowRight, Database, Brain, BarChart3, LogIn } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const Landing = () => {
@@ -15,6 +15,12 @@ const Landing = () => {
               </div>
               <span className="text-xl font-bold glow-text">QuerySense AI</span>
             </div>
+            <Link to="/auth">
+              <Button variant="outline" className="gap-2">
+                <LogIn className="w-4 h-4" />
+                Login
+              </Button>
+            </Link>
           </div>
         </div>
       </nav>

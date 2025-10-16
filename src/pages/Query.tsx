@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Sparkles, Send, Home, Database, RotateCcw } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Sparkles, Send, Home, Database, RotateCcw, LogOut } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 import AIAssistant from "@/components/AIAssistant";
 import AnswerCard from "@/components/AnswerCard";
 import DataTable from "@/components/DataTable";
@@ -28,6 +29,7 @@ import {
 import { toast } from "@/hooks/use-toast";
 
 const Query = () => {
+  const navigate = useNavigate();
   const [query, setQuery] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const [result, setResult] = useState<QueryResult | null>(null);
@@ -35,10 +37,29 @@ const Query = () => {
     getRecentQueries()
   );
   const [studentCount, setStudentCount] = useState(0);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
 
   useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (!session?.user) {
+        navigate("/auth");
+      } else {
+        setUserEmail(session.user.email || null);
+      }
+    });
+
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!session?.user) {
+        navigate("/auth");
+      } else {
+        setUserEmail(session.user.email || null);
+      }
+    });
+
     setStudentCount(getStoredStudents().length);
-  }, []);
+
+    return () => subscription.unsubscribe();
+  }, [navigate]);
 
   const handleAddStudent = (student: Student) => {
     addStudentToStorage(student);
@@ -104,9 +125,15 @@ const Query = () => {
               </div>
               <span className="text-xl font-bold glow-text">QuerySense AI</span>
             </div>
-            <Link to="/">
-              <Button variant="ghost" size="sm" className="gap-2">
-                <Home className="w-4 h-4" />
+            <div className="flex items-center gap-3">
+              {userEmail && (
+                <span className="text-sm text-muted-foreground hidden sm:block">
+                  {userEmail}
+                </span>
+              )}
+              <Link to="/">
+                <Button variant="ghost" size="sm" className="gap-2">
+                  <Home className="w-4 h-4" />
                 Home
               </Button>
             </Link>
@@ -127,6 +154,22 @@ const Query = () => {
                 <RotateCcw className="w-4 h-4" />
               </Button>
               <AddStudentDialog onAddStudent={handleAddStudent} />
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={async () => {
+                  await supabase.auth.signOut();
+                  toast({
+                    title: "Logged out",
+                    description: "You have been logged out successfully.",
+                  });
+                }}
+                className="gap-2"
+              >
+                <LogOut className="w-4 h-4" />
+                Logout
+              </Button>
+            </div>
             </div>
           </div>
         </div>
