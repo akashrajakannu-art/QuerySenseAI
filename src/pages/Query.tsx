@@ -142,7 +142,13 @@ const Query = () => {
                 <Database className="w-4 h-4 text-secondary" />
                 <span className="text-muted-foreground">{studentCount} students</span>
               </div>
-              <ViewDatasetDialog students={getStoredStudents()} />
+              <ViewDatasetDialog 
+                students={getStoredStudents()} 
+                onDataChange={() => {
+                  setStudentCount(getStoredStudents().length);
+                  if (result) setResult(null);
+                }} 
+              />
               <ImportDataDialog onImportData={handleImportData} />
               <Button
                 variant="ghost"
