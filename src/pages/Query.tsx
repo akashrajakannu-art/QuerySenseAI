@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Sparkles, Send, Home, Database, RotateCcw, LogOut } from "lucide-react";
+import { Sparkles, Send, Home, Database, RotateCcw, LogOut, User } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import AIAssistant from "@/components/AIAssistant";
@@ -117,99 +117,104 @@ const Query = () => {
     <div className="min-h-screen flex flex-col">
       {/* Navbar */}
       <nav className="border-b border-primary/20 glass-card">
-        <div className="container mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
+        <div className="container mx-auto px-4 sm:px-6 py-4">
+          <div className="flex items-center justify-between flex-wrap gap-4">
             <div className="flex items-center gap-2">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center">
-                <Sparkles className="w-6 h-6 text-white" />
+              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center">
+                <Sparkles className="w-4 h-4 sm:w-6 sm:h-6 text-white" />
               </div>
-              <span className="text-xl font-bold glow-text">QuerySense AI</span>
+              <span className="text-lg sm:text-xl font-bold glow-text">QuerySense AI</span>
             </div>
-            <div className="flex items-center gap-3">
-              {userEmail && (
-                <span className="text-sm text-muted-foreground hidden sm:block">
-                  {userEmail}
-                </span>
-              )}
-              <Link to="/">
-                <Button variant="ghost" size="sm" className="gap-2">
-                  <Home className="w-4 h-4" />
-                Home
-              </Button>
-            </Link>
-            <div className="flex items-center gap-2">
-              <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full glass-card border-primary/30 text-sm">
+            <div className="flex items-center gap-2 flex-wrap">
+              <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full glass-card border-primary/30 text-sm">
                 <Database className="w-4 h-4 text-secondary" />
                 <span className="text-muted-foreground">{studentCount} students</span>
               </div>
-              <ViewDatasetDialog 
-                students={getStoredStudents()} 
-                onDataChange={() => {
-                  setStudentCount(getStoredStudents().length);
-                  if (result) setResult(null);
-                }} 
-              />
-              <ImportDataDialog onImportData={handleImportData} />
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={handleResetData}
-                className="gap-2"
-                title="Reset to default data"
-              >
-                <RotateCcw className="w-4 h-4" />
-              </Button>
-              <AddStudentDialog onAddStudent={handleAddStudent} />
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={async () => {
-                  await supabase.auth.signOut();
-                  toast({
-                    title: "Logged out",
-                    description: "You have been logged out successfully.",
-                  });
-                }}
-                className="gap-2"
-              >
-                <LogOut className="w-4 h-4" />
-                Logout
-              </Button>
-            </div>
+              <div className="hidden sm:flex items-center gap-2">
+                <ViewDatasetDialog 
+                  students={getStoredStudents()} 
+                  onDataChange={() => {
+                    setStudentCount(getStoredStudents().length);
+                    if (result) setResult(null);
+                  }} 
+                />
+                <ImportDataDialog onImportData={handleImportData} />
+              </div>
+              <Link to="/" className="hidden sm:block">
+                <Button variant="ghost" size="sm" className="gap-2">
+                  <Home className="w-4 h-4" />
+                  <span className="hidden lg:inline">Home</span>
+                </Button>
+              </Link>
+              <Link to="/profile">
+                <Button variant="ghost" size="sm" className="gap-2">
+                  <User className="w-4 h-4" />
+                  <span className="hidden lg:inline">Profile</span>
+                </Button>
+              </Link>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleResetData}
+                  className="gap-2 hidden sm:flex"
+                  title="Reset to default data"
+                >
+                  <RotateCcw className="w-4 h-4" />
+                </Button>
+                <div className="hidden sm:block">
+                  <AddStudentDialog onAddStudent={handleAddStudent} />
+                </div>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={async () => {
+                    await supabase.auth.signOut();
+                    toast({
+                      title: "Logged out",
+                      description: "You have been logged out successfully.",
+                    });
+                  }}
+                  className="gap-2"
+                >
+                  <LogOut className="w-4 h-4" />
+                  <span className="hidden lg:inline">Logout</span>
+                </Button>
+              </div>
             </div>
           </div>
         </div>
       </nav>
 
       {/* Main Content */}
-      <main className="flex-1 container mx-auto px-6 py-12 max-w-5xl">
+      <main className="flex-1 container mx-auto px-4 sm:px-6 py-6 sm:py-12 max-w-5xl">
         {/* AI Assistant */}
         <AIAssistant isThinking={isProcessing} />
 
         {/* Title */}
-        <div className="text-center mb-8 space-y-2">
-          <h1 className="text-3xl font-bold glow-text">Ask me about your data</h1>
-          <p className="text-muted-foreground">
+        <div className="text-center mb-6 sm:mb-8 space-y-2">
+          <h1 className="text-2xl sm:text-3xl font-bold glow-text">Ask me about your data</h1>
+          <p className="text-sm sm:text-base text-muted-foreground">
             Type your question in natural language
           </p>
         </div>
 
         {/* Query Input */}
-        <form onSubmit={handleSubmit} className="mb-8">
-          <div className="flex gap-3">
+        <form onSubmit={handleSubmit} className="mb-6 sm:mb-8">
+          <div className="flex flex-col sm:flex-row gap-3">
             <Input
               type="text"
               placeholder="Example: Who has the highest marks in CSE?"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              className="flex-1 h-14 text-lg glass-card border-primary/30 focus:border-primary"
+              className="flex-1 h-12 sm:h-14 text-base sm:text-lg glass-card border-primary/30 focus:border-primary"
               disabled={isProcessing}
             />
             <Button
               type="submit"
               size="lg"
               disabled={isProcessing || !query.trim()}
-              className="h-14 px-8 bg-gradient-to-r from-primary to-accent hover:opacity-90 transition-opacity"
+              className="h-12 sm:h-14 px-6 sm:px-8 w-full sm:w-auto bg-gradient-to-r from-primary to-accent hover:opacity-90 transition-opacity"
               style={{
                 boxShadow: "var(--shadow-glow)",
               }}
@@ -254,7 +259,13 @@ const Query = () => {
             )}
 
             {result.type === "multiple" && result.chartData && (
-              <ChartView data={result.chartData} message={result.message} />
+              <div className="space-y-6">
+                <ChartView data={result.chartData} message={result.message} />
+                <DataTable
+                  students={result.data as Student[]}
+                  message="Detailed Data"
+                />
+              </div>
             )}
           </div>
         )}

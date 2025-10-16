@@ -7,18 +7,18 @@ const Landing = () => {
     <div className="min-h-screen flex flex-col">
       {/* Navbar */}
       <nav className="border-b border-primary/20 glass-card">
-        <div className="container mx-auto px-6 py-4">
+        <div className="container mx-auto px-4 sm:px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center">
-                <Sparkles className="w-6 h-6 text-white" />
+              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center">
+                <Sparkles className="w-4 h-4 sm:w-6 sm:h-6 text-white" />
               </div>
-              <span className="text-xl font-bold glow-text">QuerySense AI</span>
+              <span className="text-lg sm:text-xl font-bold glow-text">QuerySense AI</span>
             </div>
             <Link to="/auth">
-              <Button variant="outline" className="gap-2">
+              <Button variant="outline" className="gap-2 text-sm sm:text-base">
                 <LogIn className="w-4 h-4" />
-                Login
+                <span className="hidden sm:inline">Login</span>
               </Button>
             </Link>
           </div>
@@ -26,22 +26,22 @@ const Landing = () => {
       </nav>
 
       {/* Hero Section */}
-      <main className="flex-1 container mx-auto px-6 py-20">
-        <div className="max-w-4xl mx-auto text-center space-y-8">
+      <main className="flex-1 container mx-auto px-4 sm:px-6 py-12 sm:py-20">
+        <div className="max-w-4xl mx-auto text-center space-y-6 sm:space-y-8">
           {/* Animated Icon */}
-          <div className="flex justify-center mb-8">
+          <div className="flex justify-center mb-6 sm:mb-8">
             <div
-              className="w-24 h-24 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center animate-float"
+              className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center animate-float"
               style={{
                 boxShadow: "var(--shadow-glow)",
               }}
             >
-              <Brain className="w-12 h-12 text-white" />
+              <Brain className="w-10 h-10 sm:w-12 sm:h-12 text-white" />
             </div>
           </div>
 
           {/* Headline */}
-          <h1 className="text-5xl md:text-7xl font-bold glow-text leading-tight">
+          <h1 className="text-3xl sm:text-5xl md:text-7xl font-bold glow-text leading-tight">
             Ask Questions.
             <br />
             <span
@@ -52,57 +52,57 @@ const Landing = () => {
           </h1>
 
           {/* Subtitle */}
-          <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-base sm:text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto px-4">
             A natural language interface for your data. No SQL, no complex
             queries—just ask in plain English.
           </p>
 
           {/* CTA Button */}
-          <div className="flex justify-center pt-8">
+          <div className="flex justify-center pt-6 sm:pt-8">
             <Link to="/query">
               <Button
                 size="lg"
-                className="text-lg px-8 py-6 bg-gradient-to-r from-primary to-accent hover:opacity-90 transition-opacity group"
+                className="text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6 bg-gradient-to-r from-primary to-accent hover:opacity-90 transition-opacity group"
                 style={{
                   boxShadow: "var(--shadow-glow)",
                 }}
               >
                 Start Querying
-                <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                <ArrowRight className="ml-2 w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>
           </div>
 
           {/* Features */}
-          <div className="grid md:grid-cols-3 gap-6 pt-16">
-            <div className="glass-card p-6 space-y-3 animate-slide-up [animation-delay:100ms]">
-              <div className="w-12 h-12 rounded-lg bg-primary/20 flex items-center justify-center mx-auto">
-                <Database className="w-6 h-6 text-primary" />
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 pt-12 sm:pt-16 px-4">
+            <div className="glass-card p-4 sm:p-6 space-y-3 animate-slide-up [animation-delay:100ms]">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-primary/20 flex items-center justify-center mx-auto">
+                <Database className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
               </div>
-              <h3 className="font-semibold text-lg">Local Data Query</h3>
-              <p className="text-sm text-muted-foreground">
+              <h3 className="font-semibold text-base sm:text-lg">Local Data Query</h3>
+              <p className="text-xs sm:text-sm text-muted-foreground">
                 Query student records instantly with natural language. No
                 database knowledge required.
               </p>
             </div>
 
-            <div className="glass-card p-6 space-y-3 animate-slide-up [animation-delay:200ms]">
-              <div className="w-12 h-12 rounded-lg bg-secondary/20 flex items-center justify-center mx-auto">
-                <Brain className="w-6 h-6 text-secondary" />
+            <div className="glass-card p-4 sm:p-6 space-y-3 animate-slide-up [animation-delay:200ms]">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-secondary/20 flex items-center justify-center mx-auto">
+                <Brain className="w-5 h-5 sm:w-6 sm:h-6 text-secondary" />
               </div>
-              <h3 className="font-semibold text-lg">AI-Powered</h3>
-              <p className="text-sm text-muted-foreground">
+              <h3 className="font-semibold text-base sm:text-lg">AI-Powered</h3>
+              <p className="text-xs sm:text-sm text-muted-foreground">
                 Smart query parsing understands context, filters data, and
                 delivers accurate results.
               </p>
             </div>
 
-            <div className="glass-card p-6 space-y-3 animate-slide-up [animation-delay:300ms]">
-              <div className="w-12 h-12 rounded-lg bg-accent/20 flex items-center justify-center mx-auto">
-                <BarChart3 className="w-6 h-6 text-accent" />
+            <div className="glass-card p-4 sm:p-6 space-y-3 animate-slide-up [animation-delay:300ms] sm:col-span-2 md:col-span-1">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-accent/20 flex items-center justify-center mx-auto">
+                <BarChart3 className="w-5 h-5 sm:w-6 sm:h-6 text-accent" />
               </div>
-              <h3 className="font-semibold text-lg">Visual Insights</h3>
-              <p className="text-sm text-muted-foreground">
+              <h3 className="font-semibold text-base sm:text-lg">Visual Insights</h3>
+              <p className="text-xs sm:text-sm text-muted-foreground">
                 Get results as cards, tables, or charts for clear data
                 visualization.
               </p>
